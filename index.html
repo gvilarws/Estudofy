@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudofy - Organize seu Futuro</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Importando fontes arredondadas e modernas -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Estudofy</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#organizador">Organizador</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>Sua jornada acadêmica, <span class="highlight">organizada</span>.</h1>
+                    <p>O Estudofy transforma a maneira como você gerencia seu tempo, permitindo que você foque no que realmente importa: o seu aprendizado.</p>
+                    <a href="#organizador" class="btn-primary">Começar Agora</a>
+                </div>
+                
+        
+                    <div class="main-illustration">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sobre / Objetivo -->
+        <section id="sobre" class="about">
+            <div class="container">
+                <h2 class="section-title">O que é o Estudofy?</h2>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <i class="fas fa-bullseye"></i>
+                        <h3>Nosso Objetivo</h3>
+                        <p>Nossa missão é democratizar a organização estudantil, fornecendo ferramentas intuitivas que ajudam alunos de todos os níveis a atingirem seu potencial máximo.</p>
+                    </div>
+                    <div class="about-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Como facilitamos sua vida</h3>
+                        <p>Esqueça papéis bagunçados. Com o Estudofy, você centraliza seu cronograma, define metas claras e acompanha seu progresso em tempo real.</p>
+                    </div>
+                    <div class="about-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Como melhorar</h3>
+                        <p>A consistência é a chave. Ao visualizar seus estudos de forma clara, você identifica gargalos e otimiza seu tempo de descanso e foco.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Organizador de Estudos -->
+        <section id="organizador" class="organizer">
+            <div class="container">
+                <h2 class="section-title">Organizador de Estudos</h2>
+                <div class="organizer-container">
+                    <div class="input-section">
+                        <h3>O que você vai estudar hoje?</h3>
+                        <form id="study-form">
+                            <div class="form-group">
+                                <label for="subject">Matéria/Assunto</label>
+                                <input type="text" id="subject" placeholder="Ex: Cálculo I, História do Brasil..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="duration">Duração (minutos)</label>
+                                <input type="number" id="duration" placeholder="Ex: 60" required min="1">
+                            </div>
+                            <button type="submit" class="btn-add">Adicionar à Lista <i class="fas fa-plus"></i></button>
+                        </form>
+                    </div>
+                    <div class="list-section">
+                        <h3>Seu Plano de Estudo</h3>
+                        <div id="study-list" class="study-list">
+                            <!-- Os itens serão adicionados via JavaScript -->
+                            <div class="empty-message">
+                                <p>Sua lista está vazia. Comece adicionando um assunto!</p>
+                            </div>
+                        </div>
+                        <div class="stats">
+                            <p>Total de tempo planejado: <span id="total-time">0</span> minutos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span>Estudofy</span>
+                    <p>Organizando sonhos, um minuto de cada vez.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Estudofy. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
