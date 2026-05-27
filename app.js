@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://estudofy.onrender.com';
 
 function getToken() {
     return localStorage.getItem('omni_token');
@@ -60,6 +60,11 @@ function apiUpdateSession(id, update) {
 
 function apiDeleteSession(id) {
     return request(`/sessions/${id}`, {
+        method: 'DELETE'
+    });
+}
+function apiDeleteUser(id) {
+    return request(`/users/${id}`, {
         method: 'DELETE'
     });
 }

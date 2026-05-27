@@ -81,6 +81,23 @@
                 </ul>
             </nav>
             <div class="user-status">
+    <div class="status-indicator online"></div>
+    <!-- Menu de usuário -->
+    <div class="user-menu-wrapper">
+        <button id="user-menu-btn" class="user-menu-btn" title="Menu do usuário">
+            <i class="fas fa-user-circle"></i>
+        </button>
+        <div id="user-dropdown" class="user-dropdown">
+            <div class="dropdown-header">
+                <span id="dropdown-user-name">Usuário</span>
+            </div>
+            <ul>
+                <li><a href="#" id="logout-action"><i class="fas fa-sign-out-alt"></i> Sair da conta</a></li>
+                <li><a href="#" id="delete-account-action"><i class="fas fa-trash-alt"></i> Excluir conta</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
                 <span id="session-timer">00:00:00</span>
                 <div class="status-indicator online"></div>
             </div>

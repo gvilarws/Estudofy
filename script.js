@@ -1,20 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ---------- AUTENTICAÇÃO ----------
-    const token = localStorage.getItem('omni_token');
-if (token) {
-    hideAuthScreen();        // exibe a estrutura vazia
-    loadSessionsFromAPI();   // se falhar, redireciona automaticamente ao login
-} else {
-    showAuthScreen();
-}
+    // ========== ELEMENTOS DO MENU DE USUÁRIO ==========
+    const userMenuBtn = document.getElementById('user-menu-btn');
+    const userDropdown = document.getElementById('user-dropdown');
+    const dropdownUserName = document.getElementById('dropdown-user-name');
+    const logoutAction = document.getElementById('logout-action');
+    const deleteAccountAction = document.getElementById('delete-account-action');
 
+    // ========== ABRIR/FECHAR MENU ==========
+    userMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('active');
+        }
+    });
+
+    // ========== AÇÕES DO MENU ==========
+    logoutAction.addEventListener('click', (e) => {
+        e.preventDefault();
+        logout();
+        userDropdown.classList.remove('active');
+    });
+
+    deleteAccountAction.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (!confirm('Tem certeza que deseja excluir sua conta? Esta ação é irreversível!')) return;
+
+        const user = JSON.parse(localStorage.getItem('omni_user'));
+        if (!user || !user.id) return alert('Erro ao identificar usuário.');
+
+        try {
+            await apiDeleteUser(user.id);
+            alert('Conta excluída com sucesso.');
+            logout(); // limpa localStorage e volta para login
+        } catch (err) {
+            alert(err.message);
+        }
+        userDropdown.classList.remove('active');
+    });
+
+    // ========== FUNÇÕES DE AUTENTICAÇÃO (definidas uma única vez) ==========
     function showAuthScreen() {
         document.getElementById('auth-screen').style.display = 'flex';
         document.querySelector('main').style.display = 'none';
         document.querySelector('.apex-nav').style.display = 'none';
         document.querySelector('.sync-section').style.display = 'none';
         document.querySelector('.omni-footer').style.display = 'none';
+        // Esconde o botão de menu
+        userMenuBtn.style.display = 'none';
+        userDropdown.classList.remove('active');
     }
 
     function hideAuthScreen() {
@@ -23,15 +61,31 @@ if (token) {
         document.querySelector('.apex-nav').style.display = 'flex';
         document.querySelector('.sync-section').style.display = 'block';
         document.querySelector('.omni-footer').style.display = 'block';
+        // Mostra o botão de menu e preenche o nome
+        userMenuBtn.style.display = 'block';
+        const user = JSON.parse(localStorage.getItem('omni_user'));
+        if (user && user.name) {
+            dropdownUserName.textContent = user.name;
+        }
     }
 
     function logout() {
         localStorage.removeItem('omni_token');
         localStorage.removeItem('omni_user');
+        userDropdown.classList.remove('active');
         showAuthScreen();
     }
 
-    // Toggle entre formulários
+    // ========== VERIFICAÇÃO INICIAL ==========
+    const token = localStorage.getItem('omni_token');
+    if (token) {
+        hideAuthScreen();
+        loadSessionsFromAPI();   // se falhar, redireciona automaticamente ao login
+    } else {
+        showAuthScreen();
+    }
+
+    // ========== TOGGLE ENTRE LOGIN/CADASTRO ==========
     document.getElementById('show-register').addEventListener('click', (e) => {
         e.preventDefault();
         document.getElementById('login-form').style.display = 'none';
@@ -50,7 +104,7 @@ if (token) {
         document.getElementById('auth-message').textContent = 'Entre na sua central de comando';
     });
 
-    // Registro via API
+    // ========== REGISTRO VIA API ==========
     document.getElementById('register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('reg-name').value.trim();
@@ -62,7 +116,6 @@ if (token) {
         try {
             await apiRegister(name, email, password);
             alert('Conta criada! Faça login.');
-            // Voltar ao login
             document.getElementById('login-form').style.display = 'block';
             document.getElementById('register-form').style.display = 'none';
             document.getElementById('show-register').style.display = 'block';
@@ -74,7 +127,7 @@ if (token) {
         }
     });
 
-    // Login via API
+    // ========== LOGIN VIA API ==========
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value.trim();
@@ -178,7 +231,7 @@ if (token) {
         });
     });
 
-    // ========== SUBMISSÃO DE PROTOCOLO (API via app.js) ==========
+    // ========== SUBMISSÃO DE PROTOCOLO (API) ==========
     omniForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!getToken()) return;
@@ -195,7 +248,6 @@ if (token) {
 
         try {
             await apiCreateSession(newSession);
-            // Feedback
             const btn = omniForm.querySelector('button');
             const originalText = btn.innerHTML;
             btn.innerHTML = 'PROTOCOLO SINCRONIZADO <i class="fas fa-check-circle"></i>';
@@ -216,23 +268,22 @@ if (token) {
 
     // ========== CARREGAR SESSÕES DA API ==========
     async function loadSessionsFromAPI() {
-    const token = getToken();
-    if (!token) {
-        showAuthScreen();
-        return;
+        const token = getToken();
+        if (!token) {
+            showAuthScreen();
+            return;
+        }
+        try {
+            const sessions = await apiGetSessions();
+            state.sessions = sessions;
+            updateUI();
+        } catch (err) {
+            console.error('Falha ao carregar sessões:', err);
+            localStorage.removeItem('omni_token');
+            localStorage.removeItem('omni_user');
+            showAuthScreen();
+        }
     }
-    try {
-        const sessions = await apiGetSessions();
-        state.sessions = sessions;
-        updateUI();
-    } catch (err) {
-        console.error('Falha ao carregar sessões:', err);
-        // Limpa dados inválidos e força a tela de login
-        localStorage.removeItem('omni_token');
-        localStorage.removeItem('omni_user');
-        showAuthScreen();
-    }
-}
 
     // ========== RENDERIZAÇÃO & UI ==========
     function updateUI() {
@@ -352,7 +403,6 @@ if (token) {
         });
     });
 
-    // Finalizar protocolo (API)
     saveReportBtn.addEventListener('click', async () => {
         if (!state.currentSessionId || !getToken()) return;
 
@@ -422,7 +472,7 @@ if (token) {
         if (startBtn) startBtn.disabled = false;
     };
 
-    // ========== SINCRONIZAÇÃO (mantida como simulação) ==========
+    // ========== SINCRONIZAÇÃO ==========
     const syncForm = document.getElementById('sync-form');
     if (syncForm) {
         syncForm.addEventListener('submit', (e) => {
