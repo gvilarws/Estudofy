@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ---------- AUTENTICAÇÃO ----------
     const token = localStorage.getItem('omni_token');
-    if (token) {
-        hideAuthScreen();
-        loadSessionsFromAPI().then(() => updateUI());
-    } else {
-        showAuthScreen();
-    }
+if (token) {
+    hideAuthScreen();        // exibe a estrutura vazia
+    loadSessionsFromAPI();   // se falhar, redireciona automaticamente ao login
+} else {
+    showAuthScreen();
+}
 
     function showAuthScreen() {
         document.getElementById('auth-screen').style.display = 'flex';
@@ -216,15 +216,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ========== CARREGAR SESSÕES DA API ==========
     async function loadSessionsFromAPI() {
-        if (!getToken()) return;
-        try {
-            const sessions = await apiGetSessions();
-            state.sessions = sessions;
-            updateUI();
-        } catch (err) {
-            console.error(err);
-        }
+    const token = getToken();
+    if (!token) {
+        showAuthScreen();
+        return;
     }
+    try {
+        const sessions = await apiGetSessions();
+        state.sessions = sessions;
+        updateUI();
+    } catch (err) {
+        console.error('Falha ao carregar sessões:', err);
+        // Limpa dados inválidos e força a tela de login
+        localStorage.removeItem('omni_token');
+        localStorage.removeItem('omni_user');
+        showAuthScreen();
+    }
+}
 
     // ========== RENDERIZAÇÃO & UI ==========
     function updateUI() {
