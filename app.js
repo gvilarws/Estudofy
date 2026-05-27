@@ -1,4 +1,4 @@
-const API_URL = 'https://estudofy.onrender.com';
+const API_URL = 'http://localhost:3000';
 
 function getToken() {
     return localStorage.getItem('omni_token');
