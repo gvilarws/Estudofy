@@ -185,6 +185,23 @@ app.delete('/sessions/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Erro interno.' });
   }
 });
+// Excluir conta do usuário logado (protegido)
+app.delete('/users/:id', authenticateToken, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    if (req.user.id !== userId) {
+      return res.status(403).json({ error: 'Acesso negado.' });
+    }
+    const [result] = await pool.query('DELETE FROM users WHERE id = ?', [userId]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+    res.json({ message: 'Conta excluída com sucesso.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro interno.' });
+  }
+});
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
